@@ -11,21 +11,21 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="center" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="JAVAEFEXS.FXMLDocumentController">
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JAVAEFEXS.FXMLDocumentController">
     <padding>
         <Insets bottom="10" left="25" right="25" top="25" />
     </padding>
     <gridLinesVisible>true</gridLinesVisible>
-    <Text text="Welcome" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-    <Label text="User Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <Text text="Welcome" GridPane.columnSpan="2" />
+    <Label text="User Name:" GridPane.rowIndex="1" />
     <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <Label text="Password:" GridPane.rowIndex="2" />
     <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     <HBox alignment="bottom_right" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
         <Button fx:id="btnRst" mnemonicParsing="false" onAction="#RESET" text="RESETEAO" />
         <Button onAction="#handleSubmitButtonAction" text="Sign In" />
     </HBox>
-    <Text fx:id="boton" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="RIGHT" text="0" GridPane.rowIndex="6" />
+    <Text fx:id="boton" text="0" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
     <columnConstraints>
         <ColumnConstraints />
         <ColumnConstraints />
@@ -40,5 +40,3 @@
         <RowConstraints />
     </rowConstraints>
 </GridPane>
-
-

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +20,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.management.Notification;
+import org.controlsfx.control.Notifications;
 
 public class FXMLDocumentController {
 
@@ -43,6 +46,8 @@ public class FXMLDocumentController {
             if (s.matches("[a-zA-Z]+")) {
                 mensaje = "Esta todo pillo ameo";
                 boton.setFill(Color.GREEN);
+                Notifications.create().title("TOP TEXT").text("BOTTOM TEXT").hideAfter(Duration.seconds(3)).graphic(null).position(Pos.TOP_LEFT).showWarning();
+                
             } else {
                 mensaje = "EQUIVOCADO MAQUINOLA SOLO LETRA";
                 boton.setFill(Color.RED);
