@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -39,14 +40,14 @@ public class FXMLDocumentController {
     @FXML
     protected void handleSubmitButtonAction(ActionEvent event) {
         // contador++;
-
+        TextField n = new TextField();
         s = passwordField.getText();
         System.out.println(s);
         if (!s.isEmpty()) {
             if (s.matches("[a-zA-Z]+")) {
                 mensaje = "Esta todo pillo ameo";
                 boton.setFill(Color.GREEN);
-                Notifications.create().title("TOP TEXT").text("BOTTOM TEXT").hideAfter(Duration.seconds(3)).graphic(null).position(Pos.TOP_LEFT).showWarning();
+                Notifications.create().title("TOP TEXT").text("BOTTOM TEXT").hideCloseButton().graphic(n).position(Pos.CENTER).show();
                 
             } else {
                 mensaje = "EQUIVOCADO MAQUINOLA SOLO LETRA";
