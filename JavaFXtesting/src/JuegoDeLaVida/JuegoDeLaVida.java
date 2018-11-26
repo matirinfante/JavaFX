@@ -23,17 +23,10 @@ public class JuegoDeLaVida {
         for (int i = 0; i < cantFilas; i++) {
             tareas.add(new Tarea(tablero, i, i, modo));
         }
-        System.out.println("Ingrese cantidad de ejecuciones (indique 0 para infinitas): ");
-        int cantEjecuciones = new Scanner(System.in).nextInt();
-        System.out.println(tablero.mostrarTablero());
-        System.out.println("\u001B[34m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-
-        if(cantEjecuciones == 0){
-            infinito = true;
-        }
+       
                
         int i = 1;
-        while (i <= cantEjecuciones || infinito) {
+        while (true) {
             executor.invokeAll(tareas);
             try {
                 Thread.sleep(1000);
@@ -41,25 +34,12 @@ public class JuegoDeLaVida {
                 Logger.getLogger(JuegoDeLaVida.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            if (!modo) {
-                System.out.println(tablero.mostrarTablero());
-                System.out.println("\u001B[34m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-            }
             modo = !modo;
             for (Callable<Tarea> tarea : tareas) {
                 ((Tarea) tarea).setModo(modo);
             }
             i++;
         }
-        executor.shutdown();
-        System.out.println("**************************************");
-        System.out.println("*********FIN DE LA EJECUCION**********");
-        System.out.println("**************************************");
-        System.out.println("CANTIDAD DE VIVAS: " + tablero.getCantVivas());
-        System.out.println("CANTIDAD DE MUERTAS: " + tablero.getCantMuertas());
-        System.out.println("CANTIDAD DE EJECUCIONES: "+ (i-1));
-        System.out.println("CANTIDAD DE TAREAS: "+ cantTareas );
-        System.out.println("\u001B[34m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-    }
+     }
 
 }

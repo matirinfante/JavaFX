@@ -60,14 +60,10 @@ public class Controller implements Initializable {
     private int windowWidth = 750;
     private int cellSizePx = 30;
 
-    private PresetHandler presetHandler;
-
+ 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        presetHandler = new PresetHandler();
-        AnchorPane anchor = presetHandler.loadPresets(base);
-        presetBox.getChildren().add(anchor);
-
+       
         createBoard(DEFAULT_SIZE, DEFAULT_PROB);
         
         attachResizeListener();
@@ -102,30 +98,11 @@ public class Controller implements Initializable {
         createBoard(DEFAULT_SIZE, (double) countSlider.getValue()/100);
     }
     
-    @FXML
-    private void onPresetOpen(Event evt) {
-        board = presetHandler.openCurrentPreset(DEFAULT_SIZE);
-        createDisplay();
-    }
-
+  
     /**
      * TODO: check if valid file (correct number of cells for rectangle shaped board)
      */
-    @FXML
-    private void onOpen(Event evt) {
-        Board newBoard = FileHandler.openFromFile(DEFAULT_SIZE);
-        if (newBoard != null) {
-            board = newBoard;
-            createDisplay();
-        }
-    }
-
-    @FXML
-    private void onSave(Event evt) {
-        FileHandler.saveToFile(board);
-    }
-
-
+    
     @FXML
     private void onSlide(Event evt) {
         countSlider.valueProperty().addListener(new ChangeListener<Number>() {
