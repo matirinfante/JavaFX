@@ -1,6 +1,6 @@
 package gof.gui;
 
-import gof.core.Board;
+import gof.core.Tablero;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,7 +51,7 @@ public class Controller implements Initializable {
     @FXML
     private HBox rootBox;
 
-    private Board board;
+    private Tablero board;
 
     private JavaFXDisplayDriver display;
 
@@ -99,10 +99,6 @@ public class Controller implements Initializable {
     }
     
   
-    /**
-     * TODO: check if valid file (correct number of cells for rectangle shaped board)
-     */
-    
     @FXML
     private void onSlide(Event evt) {
         countSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -165,12 +161,12 @@ public class Controller implements Initializable {
     }
 
     private void createBoard(int size, double prob) {
-        board = new Board(size, size, prob);
+        board = new Tablero(size, size, prob);
         createDisplay();
     }
     
     private void createDisplay() {
-        display = new JavaFXDisplayDriver(board.getSize(), cellSizePx, board);
+        display = new JavaFXDisplayDriver(board.getTamano(), cellSizePx, board);
 
         base.getChildren().clear();
         base.getChildren().add(new Group(display.getPane()));        

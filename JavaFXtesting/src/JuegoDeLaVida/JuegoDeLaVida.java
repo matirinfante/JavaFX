@@ -1,5 +1,6 @@
 package JuegoDeLaVida;
 
+import gof.core.Tarea;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -15,13 +16,13 @@ public class JuegoDeLaVida {
 
         Tablero tablero = new Tablero();
         int cantFilas = Tablero.getCANTFILAS();
-        boolean infinito = false, modo = true; // En principio el modo se setea en true, es decir, en modo Verificar. False, modificar.
+        boolean modo = true; // En principio el modo se setea en true, es decir, en modo Verificar. False, modificar.
         int cantTareas = cantFilas/2;
         ExecutorService executor = Executors.newFixedThreadPool(cantTareas);
         Set<Callable<Tarea>> tareas = new HashSet();
 
         for (int i = 0; i < cantFilas; i++) {
-            tareas.add(new Tarea(tablero, i, i, modo));
+            tareas.add(new Tarea(tablero, i, modo));
         }
        
                
