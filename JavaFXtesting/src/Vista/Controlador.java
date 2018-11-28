@@ -46,6 +46,7 @@ public class Controlador implements Initializable {
     private Button botonPlay, botonPausa, botonRandom, botonLimpiar;
 
     private Tablero tablero;
+    
     boolean modo = true; // En principio el modo se setea en true, es decir, en modo Verificar. False, modificar.
     int cantTareas = 2;
     ExecutorService executor = Executors.newFixedThreadPool(cantTareas);
@@ -55,11 +56,11 @@ public class Controlador implements Initializable {
 
     private Timeline turno = null;
 
-    private int cellSizePx = 35;
+    private final int cellSizePx = 35;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        //Metodo que es invocado al inicializar. Crea el tablero aleatoriamente y configura las tareas con la instancia de tablero recientemente creada
         crearTablero(TAMANO, DEFAULT_PROB);
         for (int i = 0; i < TAMANO; i++) {
             tareas.add(new Tarea(tablero, i, modo));
@@ -69,6 +70,7 @@ public class Controlador implements Initializable {
 
     @FXML
     private void play(Event evt) {
+        //Metodo invocado al presionar botonPlay. Inicia la animación del juego junto al trabajo de concurrencia.
         cambiarBotones(false);
 
         turno = new Timeline(new KeyFrame(Duration.millis(300), e -> {
@@ -92,23 +94,27 @@ public class Controlador implements Initializable {
 
     @FXML
     private void pausa(Event evt) {
+        //Metodo invocado al presionar el botonPausa. Detiene la animación.
         cambiarBotones(true);
         turno.stop();
     }
 
     @FXML
     private void limpiarTablero(Event evt) {
+        //Metodo invocado al presionar el botonLimpiar. Limpia el tablero de celulas (crea un nuevo tablero con celulas muertas).
         crearTablero(TAMANO, 0);
     }
 
     @FXML
     private void randomizar(Event evt) {
+        //Metodo invocado al presionar el botonRandom. Crea un nuevo tablero con celulas vivas aleatorias.
         Random r = new Random();
         crearTablero(TAMANO, (double) r.nextInt(50) / 100);
     }
 
     @FXML
     private void instrucciones(Event evt) {
+        //Metodo invocado al presionar el botonInstrucciones. Inicia una nueva ventana con datos sobre el juego.
         Text text1 = new Text("Juego de la Vida\n");
         text1.setFont(Font.font(30));
         Text text2 = new Text(
@@ -119,7 +125,7 @@ public class Controlador implements Initializable {
         about.setFont(Font.font(20));
         Text text3 = new Text("\nRepositorio en Github: \n");
         text3.setFont(Font.font(20));
-        Hyperlink link = new Hyperlink("https://github.com/matirinfante/JavaFX");
+        Hyperlink link = new Hyperlink("https://github.com/matirinfante/JavaFX"); //Esto no anda je
         TextFlow tf = new TextFlow(text1, text2, about, text3, link);
         tf.setPadding(new Insets(10, 10, 10, 10));
         tf.setTextAlignment(TextAlignment.JUSTIFY);
@@ -135,28 +141,34 @@ public class Controlador implements Initializable {
 
     }
 
-    private void cambiarBotones(boolean enable) {
-        botonPlay.setDisable(!enable);
-        botonLimpiar.setDisable(!enable);
-        botonRandom.setDisable(!enable);
+    private void cambiarBotones(boolean habilitado) {
+        //Al dar play o pausa, los botones se habilitan o deshabilitan.
+        botonPlay.setDisable(!habilitado);
+        botonLimpiar.setDisable(!habilitado);
+        botonRandom.setDisable(!habilitado);
 
-        botonPausa.setDisable(enable);
+        botonPausa.setDisable(habilitado);
     }
 
     private void crearTablero(int tam, double prob) {
+        //Metodo encargado de crear el tablero con un tamaño @tam y una probabilidad @prob. Al crearlo tambien crea la vista relacionado al nuevo tablero.
+        //Tambien vuelve a instanciar las tareas con su respectivo tablero.
         tablero = new Tablero(tam, tam, prob);
         crearDisplay();
+        tareas.clear();
         for (int i = 0; i < TAMANO; i++) {
             tareas.add(new Tarea(tablero, i, modo));
         }
     }
 
     private void crearDisplay() {
+        //Crea la vista segun el tablero.
         display = new DisplayTablero(tablero.getTamano(), cellSizePx, tablero);
         base.getChildren().clear();
         base.getChildren().add(new Group(display.obtenerRectangulo()));
     }
     public void shutdown(){
+        //Termina el executor.
         executor.shutdown();
     }
 }
