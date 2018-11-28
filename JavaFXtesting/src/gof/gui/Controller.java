@@ -1,9 +1,17 @@
 package gof.gui;
 
 import gof.core.Tablero;
+import gof.core.Tarea;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,86 +40,82 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Controller implements Initializable {
-    
-    private final int    DEFAULT_SIZE = 15;
+
+    private final int TAMANO = 15;
     private final double DEFAULT_PROB = 0.3;
 
     @FXML
     private FlowPane base;
     @FXML
-    private Label countLabel;
-    @FXML
-    private Slider countSlider;
-    @FXML
     private HBox presetBox;
-    @FXML
-    private Button openButton, saveButton, openPresetBtn;
     @FXML
     private Button runButton, stopButton, randomizeButton, clearButton;
     @FXML
     private HBox rootBox;
 
-    private Tablero board;
+    private Tablero tablero;
+    boolean modo = true; // En principio el modo se setea en true, es decir, en modo Verificar. False, modificar.
+    int cantTareas = 2;
+    ExecutorService executor = Executors.newFixedThreadPool(cantTareas);
+    Set<Callable<Tarea>> tareas = new HashSet();
 
     private JavaFXDisplayDriver display;
 
-    private Timeline loop = null;
-    
+    private Timeline turno = null;
+
     private int windowWidth = 750;
     private int cellSizePx = 30;
 
- 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       
-        createBoard(DEFAULT_SIZE, DEFAULT_PROB);
-        
-        attachResizeListener();
+
+        crearTablero(TAMANO, DEFAULT_PROB);
+        for (int i = 0; i < TAMANO; i++) {
+            tareas.add(new Tarea(tablero, i, modo));
+        }
+      //  attachResizeListener();
     }
 
     @FXML
-    private void onRun(Event evt) {
-        toggleButtons(false);
+    private void play(Event evt) {
+        cambiarBotones(false);
 
-        loop = new Timeline(new KeyFrame(Duration.millis(300), e -> {
-            board.update();
-            display.displayBoard(board);
+        turno = new Timeline(new KeyFrame(Duration.millis(300), e -> {
+            try {
+                executor.invokeAll(tareas);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            modo = !modo;
+            for (Callable<Tarea> tarea : tareas) {
+                ((Tarea) tarea).setModo(modo);
+            }
+            if (!modo) {
+                display.mostrarTablero(tablero);
+            }
         }));
 
-        loop.setCycleCount(100);
-        loop.play();
+        turno.setCycleCount(Timeline.INDEFINITE);
+        turno.play();
     }
 
     @FXML
-    private void onStop(Event evt) {
-        toggleButtons(true);
-        loop.stop();
+    private void pausa(Event evt) {
+        cambiarBotones(true);
+        turno.stop();
     }
 
     @FXML
-    private void onClear(Event evt) {
-        createBoard(DEFAULT_SIZE, 0);
+    private void limpiarTablero(Event evt) {
+        crearTablero(TAMANO, 0);
     }
 
     @FXML
-    private void onRandomize(Event evt) {
-        createBoard(DEFAULT_SIZE, (double) countSlider.getValue()/100);
+    private void randomizar(Event evt) {
+        crearTablero(TAMANO, (double) 50 / 100);
     }
+
     
-  
-    @FXML
-    private void onSlide(Event evt) {
-        countSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable,
-                    Number oldValue, Number newValue) {
-                countLabel.setText(newValue.intValue()+"%");
-                createBoard(DEFAULT_SIZE, (double) newValue.intValue()/100);
-            }
-        });
-    }
-
-
     @FXML
     private void onAbout(Event evt) {
         // TEXT //
@@ -119,20 +123,20 @@ public class Controller implements Initializable {
         text1.setFont(Font.font(30));
         Text text2 = new Text(
                 "\nThe Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970.\n"
-                        + "The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves or, for advanced players, by creating patterns with particular properties."
-                );
+                + "The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves or, for advanced players, by creating patterns with particular properties."
+        );
         Text text3 = new Text("\n\nRules\n");
         text3.setFont(Font.font(20));
         Text text4 = new Text(
                 "\nThe universe of the Game of Life is a two-dimensional orthogonal grid of square cells, each of which is in one of two possible states, alive or dead. Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:\n"
-                        +"\n1) Any live cell with fewer than two live neighbours dies, as if caused by under-population.\n"
-                        +"2) Any live cell with two or three live neighbours lives on to the next generation.\n"
-                        +"3) Any live cell with more than three live neighbours dies, as if by overcrowding.\n"
-                        +"4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.\n\nMore on Wikipedia:\n"
-                );
+                + "\n1) Any live cell with fewer than two live neighbours dies, as if caused by under-population.\n"
+                + "2) Any live cell with two or three live neighbours lives on to the next generation.\n"
+                + "3) Any live cell with more than three live neighbours dies, as if by overcrowding.\n"
+                + "4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.\n\nMore on Wikipedia:\n"
+        );
 
         Hyperlink link = new Hyperlink("http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life <-------not working");
-        TextFlow tf = new TextFlow(text1,text2,text3,text4,link);
+        TextFlow tf = new TextFlow(text1, text2, text3, text4, link);
         tf.setPadding(new Insets(10, 10, 10, 10));
         tf.setTextAlignment(TextAlignment.JUSTIFY);
         // END TEXT, START WINDOW //
@@ -146,13 +150,8 @@ public class Controller implements Initializable {
         dialog.show();
         // END WINDOW //
     }
-    
-    private void toggleButtons(boolean enable) {
-        countSlider.setDisable(!enable);
-        presetBox.setDisable(!enable);
-        openButton.setDisable(!enable);
-        openPresetBtn.setDisable(!enable);
-        saveButton.setDisable(!enable);
+
+    private void cambiarBotones(boolean enable) {
         runButton.setDisable(!enable);
         clearButton.setDisable(!enable);
         randomizeButton.setDisable(!enable);
@@ -160,19 +159,22 @@ public class Controller implements Initializable {
         stopButton.setDisable(enable);
     }
 
-    private void createBoard(int size, double prob) {
-        board = new Tablero(size, size, prob);
-        createDisplay();
+    private void crearTablero(int tam ,double prob) {
+        tablero = new Tablero(tam, tam, prob);
+        crearDisplay();
+        for (int i = 0; i < TAMANO; i++) {
+            tareas.add(new Tarea(tablero, i, modo));
+        }
     }
-    
-    private void createDisplay() {
-        display = new JavaFXDisplayDriver(board.getTamano(), cellSizePx, board);
 
+    private void crearDisplay() {
+        display = new JavaFXDisplayDriver(tablero.getTamano(), cellSizePx, tablero);
+        
         base.getChildren().clear();
-        base.getChildren().add(new Group(display.getPane()));        
+        base.getChildren().add(new Group(display.obtenerRectangulo()));
     }
-    
-    private void attachResizeListener() {
+
+    /*private void attachResizeListener() {
         ChangeListener<Number> sizeListener = new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -180,10 +182,10 @@ public class Controller implements Initializable {
                 if (newWidth > 250 && Math.abs(newWidth - windowWidth) >= 50) {
                     windowWidth = newWidth;
                     cellSizePx = newWidth / 25;
-                    createDisplay();
+                    crearDisplay();
                 }
             }
         };
         rootBox.widthProperty().addListener(sizeListener);
-    }
+    }*/
 }

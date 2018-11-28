@@ -14,6 +14,10 @@ public class Tarea implements Callable {
         this.modo = modo;
     }
 
+    public void setModo(boolean modo) {
+        this.modo = modo;
+    }
+
     @Override
     public Object call() throws Exception {
         //Dependiendo del modo, verifica o modifica.

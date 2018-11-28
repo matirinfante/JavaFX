@@ -120,9 +120,6 @@ public class Tablero {
         }
     }
 
-    /**
-     * Updates Cell state based on newState
-     */
     public void actualizar(int fila) {
         for (int w = 0; w < tablero[fila].length; w++) {
             tablero[fila][w].actualizarEstado();

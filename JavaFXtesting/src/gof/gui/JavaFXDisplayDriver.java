@@ -10,45 +10,45 @@ import javafx.scene.shape.Rectangle;
 
 public class JavaFXDisplayDriver implements DisplayDriver {
     private int sz;
-    private TilePane tilePane = new TilePane(5,5);
+    private TilePane panel = new TilePane(5,5);
 
-    public JavaFXDisplayDriver(int boardSize, int cellSizePx, Tablero board) {
-        sz = boardSize;
-        tilePane.setPrefRows(boardSize);
-        tilePane.setPrefColumns(boardSize);
+    public JavaFXDisplayDriver(int tamTablero, int tamCelula, Tablero tablero) {
+        sz = tamTablero;
+        panel.setPrefRows(tamTablero);
+        panel.setPrefColumns(tamTablero);
 
-        Celula[][] g = board.getTablero();
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                Color c = g[i][j].obtenerEstado() ? Color.STEELBLUE : Color.WHITE;
-                Rectangle r = new Rectangle(cellSizePx, cellSizePx, c);
-                tilePane.getChildren().add(r);
+        Celula[][] g = tablero.getTablero();
+        for (int i = 0; i < tamTablero; i++) {
+            for (int j = 0; j < tamTablero; j++) {
+                Color c = g[i][j].obtenerEstado() ? Color.RED : Color.WHITE;
+                Rectangle r = new Rectangle(tamCelula, tamCelula, c);
+                panel.getChildren().add(r);
                 
-                attachListeners(r, g[i][j]);
+                setListener(r, g[i][j]);
             }
         }
     }
 
     @Override
-    public void displayBoard(Tablero board) {
-        Celula[][] g = board.getTablero();
+    public void mostrarTablero(Tablero t) {
+        Celula[][] g = t.getTablero();
         for (int i = 0; i < g.length; i++) {
             for (int j = 0; j < g[0].length; j++) {
-                Rectangle r = (Rectangle) tilePane.getChildren().get(boardToPaneCoords(i, j));
-                r.setFill(g[i][j].obtenerEstado() ? Color.STEELBLUE : Color.WHITE);
+                Rectangle r = (Rectangle) panel.getChildren().get(boardToPaneCoords(i, j));
+                r.setFill(g[i][j].obtenerEstado() ? Color.RED : Color.WHITE);
             }
         }
     }
 
-    public TilePane getPane() {
-        return tilePane;
+    public TilePane obtenerRectangulo() {
+        return panel;
     }
 
     private int boardToPaneCoords(int i, int j) {
         return i * sz + j;
     }
     
-    private void attachListeners(Rectangle r, Celula c) {
+    private void setListener(Rectangle r, Celula c) {
         r.setOnMousePressed(e -> { r.setFill(Color.GRAY); });
 
         r.setOnMouseClicked(e -> {
