@@ -3,12 +3,12 @@ package JuegoNucleo;
 public class Tablero {
 
     private Celula[][] tablero;
-    private int height = 3; //bottom right pos: grid[height-1][width-1]
-    private int width = 3;
+    private int alto = 3; //bottom right pos: grid[height-1][width-1]
+    private int ancho = 3;
 
     public Tablero(Celula[][] grid) {
         this.tablero = grid;
-        height = width = grid.length;
+        alto = ancho = grid.length;
     }
 
     /**
@@ -17,8 +17,8 @@ public class Tablero {
      * @param p probabilidad de vida //test
      */
     public Tablero(int alto, int ancho, double p) {
-        this.height = alto;
-        this.width = ancho;
+        this.alto = alto;
+        this.ancho = ancho;
         tablero = new Celula[alto][ancho];
 
         for (int h = 0; h < tablero.length; h++) {
@@ -37,60 +37,42 @@ public class Tablero {
     }
 
     public int getTamano() {
-        return width;
+        return ancho;
     }
 
     public int verificarVecinos(int fila, int col) {
-        int sum = 0;
-        // Positions numbered as phone dial
-        if (fila != 0 && col != 0) {    //1
-            if (estaViva(fila - 1, col - 1)) {
-                sum++;
-            }
-        }
+        int contarVivas = 0;
+        int aux1, aux2;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
 
-        if (fila != 0) {
-            if (estaViva(fila - 1, col)) { //2
-                sum++;
-            }
-        }
+                if (i != 0 || j != 0) {
+                    aux1 = fila + i;
+                    aux2 = col + j;
 
-        if (fila != 0 && col != width - 1) {//3
-            if (estaViva(fila - 1, col + 1)) {
-                sum++;
-            }
-        }
-        if (col != 0) {
-            if (estaViva(fila, col - 1)) { //4
-                sum++;
-            }
-        }
-        //self
-        if (col != width - 1) {
-            if (estaViva(fila, col + 1)) { //6
-                sum++;
-            }
-        }
+                    if (aux1 < 0) {
+                        aux1 += ancho;
+                    }
 
-        if (fila != height - 1 && col != 0) {
-            if (estaViva(fila + 1, col - 1)) { //7
-                sum++;
+                    if (aux1 >= ancho) {
+                        aux1 -= ancho;
+                    }
+
+                    if (aux2 < 0) {
+                        aux2 += ancho;
+                    }
+
+                    if (aux2 >= ancho) {
+                        aux2 -= ancho;
+                    }
+
+                    if (estaViva(aux1, aux2)) {
+                        contarVivas++;
+                    }
+                }
             }
         }
-
-        if (fila != height - 1) {
-            if (estaViva(fila + 1, col)) { //8
-                sum++;
-            }
-        }
-
-        if (fila != height - 1 && col != width - 1) {
-            if (estaViva(fila + 1, col + 1)) { //9
-                sum++;
-            }
-        }
-
-        return sum;
+        return contarVivas;
     }
 
     public boolean estaViva(int fila, int col) {
