@@ -2,11 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.*?>
 
 <HBox fx:id="rootBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650" prefWidth="870" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Vista.Controlador">
    <children>
@@ -25,12 +28,12 @@
                      </padding>
                      <left>
                          <fx:define>
-                             <!--><Image fx:id="playIcon" url="img/play.png"></Image><-->
+                             <Image fx:id="playIcon" url="img/play.png"></Image>
                          </fx:define>
                          <Button fx:id="botonPlay" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#play" prefHeight="49.0" prefWidth="100.0" text="Empezar" BorderPane.alignment="CENTER">
-                            <!-->  <graphic>
+                            <graphic>
                                 <ImageView image="$playIcon" fitHeight="20" fitWidth="20" preserveRatio="true" ></ImageView>
-                             </graphic> <-->
+                             </graphic>
                          </Button> 
                      </left>
                      <right>
@@ -70,6 +73,22 @@
                   <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </BorderPane>
+            <Label prefHeight="35.0" prefWidth="74.0" text="Turno:">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="contTurno" prefHeight="35.0" prefWidth="118.0" textFill="#ffeb0d">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+           </Label>
          </children>
       </VBox>
    </children>

@@ -3,7 +3,7 @@ package JuegoNucleo;
 public class Tablero {
 
     private Celula[][] tablero;
-    private int alto = 3; //bottom right pos: grid[height-1][width-1]
+    private int alto = 3;
     private int ancho = 3;
 
     public Tablero(Celula[][] grid) {
@@ -79,26 +79,21 @@ public class Tablero {
         return tablero[fila][col].obtenerEstado();
     }
 
-    /**
-     * Assigns new state to individual Cells according to GoF rules
-     *
-     * @param fila
-     */
     public void verificar(int fila) {
         for (int w = 0; w < tablero[fila].length; w++) {
             int nr = verificarVecinos(fila, w);
             if (nr < 2) {
                 tablero[fila][w].cambiarEstado(false);
-            } //underpop
+            } //soledad
             else if (nr > 3) {
                 tablero[fila][w].cambiarEstado(false);
-            } //overcrowd
+            } //sobrepoblacion
             else if (nr == 3) {
                 tablero[fila][w].cambiarEstado(true);
-            } //born
+            } //nace
             else if (nr == 2) {
                 tablero[fila][w].cambiarEstado(tablero[fila][w].obtenerEstado());
-            } // stay same
+            } // nada
         }
     }
 

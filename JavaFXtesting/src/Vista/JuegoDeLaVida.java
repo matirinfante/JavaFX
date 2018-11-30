@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class JuegoDeLaVida extends Application {
@@ -19,6 +20,7 @@ public class JuegoDeLaVida extends Application {
         primaryStage.setTitle("Juego de la Vida Concurrente");
         primaryStage.setScene(new Scene(parent));
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image("/img/fai.jpg"));
         primaryStage.show();
     }
 
